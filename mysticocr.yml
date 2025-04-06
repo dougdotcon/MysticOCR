@@ -1,0 +1,16 @@
+# ALL VALUES ARE REQUIRED! BUT THEY MAY BE EMPTY!
+mystic:
+  overwrite_db: true
+  command: match
+  scan:
+    image_dir: ".\\data\\mtg"
+    output_db: ./results.db # this needs to point to something.
+    output_dir: ./output
+    width_ths: 8
+    x_ths: 12
+    gpu: true
+    show_image: true #Whether or not to display the last image processed.
+  match:
+    db: ./results.db
+    card_db: ./db.json # Get default-cards from scryfall's bulk data
+
