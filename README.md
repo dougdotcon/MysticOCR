@@ -1,111 +1,95 @@
-# MysticOCR - Leitor OCR para Cartas Magic: The Gathering
+# MysticOCR
 
-Este projeto é uma ferramenta em Python para reconhecer cartas de Magic: The Gathering a partir de imagens, utilizando OCR (Reconhecimento Óptico de Caracteres), correspondência com um banco de dados e atualização automática de preços das cartas.
+MysticOCR is an intelligent Python tool designed to recognize Magic: The Gathering cards from images. It leverages Optical Character Recognition (OCR) to extract text, matches it against a database of real cards using fuzzy matching, and automatically updates prices via the Scryfall API.
 
-## Funcionalidades
+## Features
 
-- **OCR**: Reconhece texto em imagens de cartas usando EasyOCR.
-- **Banco de Dados**: Armazena resultados do OCR e informações das cartas.
-- **Correspondência**: Faz o pareamento dos textos reconhecidos com cartas reais usando técnicas de fuzzy matching.
-- **Atualização de Preços**: Baixa preços atualizados das cartas via API Scryfall.
-- **Processamento em Massa**: Suporte para escanear várias imagens automaticamente.
-- **Download Automático**: Baixa o banco de dados de cartas atualizado.
+- **Optical Character Recognition (OCR)**: Extracts text from card images using EasyOCR.
+- **Database Management**: Stores OCR results and card information using PostgreSQL.
+- **Fuzzy Matching**: Correlates recognized text with actual card data, handling OCR errors and variations.
+- **Price Updates**: Fetches current market prices directly from the Scryfall API.
+- **Batch Processing**: Handles multiple images automatically in a single run.
+- **Automatic Data Sync**: Downloads and updates the local card database cache.
 
-## Dependências
+## Prerequisites
 
-Instale as dependências com:
+- Python 3.8+
+- PostgreSQL Database
+- Internet connection (for Scryfall API)
 
-```
-pip install -r requirements.txt
-```
+## Installation
 
-Lista de pacotes:
+1. **Clone the repository:**
+   bash
+   git clone https://github.com/yourusername/mysticocr.git
+   cd mysticocr
+   
 
-- `easyocr`
-- `opencv-python`
-- `tqdm`
-- `fuzzywuzzy`
-- Além disso, requer `psycopg2` para integração com banco de dados PostgreSQL.
-- `requests`
-- `pyyaml`
+2. **Install dependencies:**
+   bash
+   pip install -r requirements.txt
+   
 
-## Configuração
+   *Ensure you have the system dependencies for `psycopg2` installed.*
 
-Configure o arquivo `mysticocr.yml` com os seguintes parâmetros principais:
+## Configuration
 
-```yaml
+Configure the application by editing the `mysticocr.yml` file:
+
+yaml
 mystic:
-  command: scan | scan_new | match | price
+  command: scan  # Options: scan, scan_new, match, price
   scan:
-    image_dir: caminho/para/imagens
-    show_image: true | false
+    image_dir: ./images
+    show_image: true
   database:
     host: localhost
     port: 5432
-    user: seu_usuario
-    password: sua_senha
-    dbname: nome_do_banco
-```
+    user: your_username
+    password: your_password
+    dbname: mystic_db
 
-**Nunca armazene credenciais sensíveis diretamente no código. Use variáveis de ambiente para proteger seus dados.**
 
-## Como usar
+**Security Note:** Never hardcode sensitive credentials. Use environment variables or a secure vault.
 
-Execute o script principal com:
+## Usage
 
-```
+Run the main script:
+
+bash
 python MysticOCR3.py
-```
 
-O comportamento depende do comando configurado:
 
-### 1. `scan`
+### Workflow
 
-- Escaneia todas as imagens `.jpg` no diretório configurado.
-- Realiza OCR e salva os resultados no banco de dados.
-- Pode exibir as imagens com anotações do OCR.
+1. **Scan Images (`command: scan`)**
+   - Processes all images in the specified directory.
+   - Performs OCR and saves raw text to the database.
 
-### 2. `scan_new`
+2. **Match Cards (`command: match`)**
+   - Loads card data (usually from a Scryfall bulk JSON).
+   - Matches OCR text to specific cards and updates the database.
 
-- Escaneia apenas imagens novas que ainda não estão no banco de dados.
+3. **Update Prices (`command: price`)**
+   - Fetches the latest prices from Scryfall and updates the database.
 
-### 3. `match`
+## Project Structure
 
-- Carrega um arquivo JSON com cartas baixadas da Scryfall.
-- Faz a correspondência dos textos OCR com as cartas reais usando fuzzy matching.
-- Atualiza o banco de dados com os resultados.
+- `MysticOCR3.py`: Main entry point and workflow manager.
+- `MysticPricer.py`: Module for price fetching and updates.
+- `classes/`: Core logic modules.
+    - `OCR.py`: Handles image text extraction.
+    - `Matcher.py`: Logic for fuzzy matching text to cards.
+    - `Database.py`: PostgreSQL interface.
+    - `BulkData.py`: Handles Scryfall bulk data operations.
+    - `Card.py`: Card data model.
+- `mysticocr.yml`: Configuration file.
+- `requirements.txt`: Python dependencies.
 
-### 4. `price`
+## Contributing
 
-- Baixa o banco de dados de cartas atualizado da Scryfall.
-- Atualiza os preços das cartas no banco de dados local.
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
-## Passos recomendados
+## License
 
-1. Configure o arquivo `mysticocr.yml`.
-2. Execute com comando `scan` para processar as imagens.
-3. Execute com comando `match` para associar os textos às cartas.
-4. Execute com comando `price` para atualizar os preços.
-
-## Estrutura do Projeto
-
-- `MysticOCR3.py`: Script principal.
-- `MysticPricer.py`: Atualização de preços.
-- `classes/`
-  - `OCR.py`: Classe para OCR.
-  - `Matcher.py`: Classe para correspondência.
-  - `Database.py`: Classe para interação com banco de dados.
-  - `BulkData.py` e `Card.py`: Manipulação de dados das cartas.
-- `mysticocr.yml`: Configurações.
-- `requirements.txt`: Dependências.
-
-## Licença
-
-Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
-
-## Contribuição
-
-Contribuições são bem-vindas! Por favor, abra uma *issue* ou envie um *pull request*.
-
----
-Documentação atualizada para refletir toda a estrutura e funcionalidades do projeto, em português brasileiro.
+[MIT](https://choosealicense.com/licenses/mit/)
